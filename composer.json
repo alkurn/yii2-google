@@ -1,5 +1,5 @@
 {
-  "name": "alkurn/yii2-googleplaces",
+  "name": "alkurn/yii2-google",
   "description": "Easy google places extension for Yii2",
   "keywords": [
     "yii2",
@@ -9,8 +9,8 @@
   "type": "yii2-extension",
   "license": "MIT",
   "support": {
-    "issues": "https://gitlab.com/alkurn/yii2-googleplaces/issue",
-    "source": "https://gitlab.com/alkurn/yii2-googleplaces"
+    "issues": "https://gitlab.com/alkurn/yii2-google/issue",
+    "source": "https://gitlab.com/alkurn/yii2-google"
   },
   "authors": [
     {
