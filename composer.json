@@ -4,7 +4,8 @@
   "keywords": [
     "yii2",
     "extension",
-    " google places "
+    " google places",
+    " google map"
   ],
   "type": "yii2-extension",
   "license": "MIT",
