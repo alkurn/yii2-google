@@ -1,0 +1,30 @@
+{
+  "name": "alkurn/yii2-googleplaces",
+  "description": "Easy google places extension for Yii2",
+  "keywords": [
+    "yii2",
+    "extension",
+    " google places "
+  ],
+  "type": "yii2-extension",
+  "license": "MIT",
+  "support": {
+    "issues": "https://gitlab.com/alkurn/yii2-googleplaces/issue",
+    "source": "https://gitlab.com/alkurn/yii2-googleplaces"
+  },
+  "authors": [
+    {
+      "name": "Ganesh",
+      "email": "ganesh.alkurn@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "yiisoft/yii2": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "alkurn\\googleplaces\\": ""
+    }
+  }
+}
