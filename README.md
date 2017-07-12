@@ -1,4 +1,4 @@
-# yii2-Googleplaces
+# yii2-google
 Google Places Auto Complete widget for Yii2
 
 
@@ -7,37 +7,31 @@ Google Places Auto Complete widget for Yii2
 Add below to your `composer.json` file
 
 ```
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/alkurn/yii2-googleplaces"
-        }
-    ],
     "requires": {
-        "alkurn/yii2-googleplaces": "*"
+        "alkurn/yii2-google": "dev-master"
     }
 ```
-
+```
+composer require alkurn/yii2-google
+```
 ##Usage
 
 Using widget and model.
-
-```
-use alkurn\googleplaces;
-
-echo GooglePlaces::widget([
-    'model' => $model,
-    'attribute' => 'location'
-]);
-```
-
 Using widget for custom field name and value.
 
 ```
-use alkurn\googleplaces;
-echo GooglePlaces::widget([
+use alkurn\google\Places;
+use alkurn\google\Map;
+echo Places::widget([
     'name' => 'place'
     'value' => 'Jakarta'
+]);
+
+use alkurn\google\Map;
+echo Map::widget([
+    'latitude' => '34.000',
+    'longitude' => '84.000',
+    'title' => 'India'
 ]);
 
 ```
@@ -46,8 +40,9 @@ Using active form.
 
 ```
 use yii\bootstrap\ActiveForm;
-use alkurn\googleplaces;
+use alkurn\google\Places;
 
 echo $form = ActiveForm::begin();
-echo $form->field($model, 'location')->widget(GooglePlaces::className());
+echo $form->field($model, 'location')->widget(Places::className());
+
 ```
