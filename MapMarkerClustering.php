@@ -28,7 +28,9 @@ class MapMarkerClustering extends Widget
      */
     public function run()
     {
-        echo Html::beginTag('div', ['id' => (empty($this->options['id']) ? $this->getId() : $this->options['id']), 'class' => $this->options['class'], 'height'=>$this->options['height'], 'width'=>$this->options['width'], 'style'=>'height:500px;width:100%;']);
+        $height = isset($this->options['height']) ? $this->options['height'] : '500px';
+        $width = isset($this->options['height']) ? $this->options['width'] : '100%';
+        echo Html::beginTag('div', ['id' => (empty($this->options['id']) ? $this->getId() : $this->options['id']), 'class' => $this->options['class'], 'height' => $height, 'width' => $width, 'style'=>'height:'.$this->options['height'].';width:'.$this->options['width'].';']);
         echo Html::endTag('div');
         $this->registerClientScript();
     }
@@ -45,7 +47,11 @@ class MapMarkerClustering extends Widget
         $mapId = (empty($this->options['id']) ? $this->getId() : $this->options['id']);
         $view = $this->getView();
 
-
+        $items = [];
+        foreach($data as $item){
+            $items[] = ['id' => $item->id, 'name' => $item->name, 'address' => $item->address, 'logo' => $item->logo, 'latitude' => $item->latitude, 'longitude' => $item->longitude];
+        }
+        $data = json_encode($items);
         if (Yii::$app->Map->apiKey) {
             $this->apiKey = Yii::$app->Map->apiKey;
         }
@@ -56,55 +62,37 @@ class MapMarkerClustering extends Widget
                 //'callback' => $this->callback
             ]));
 
-
         $js = <<<JS
          
        initMap();
-
-       function initMap() {
-           var locations = [
-            {lat: -31.563910, lng: 147.154312, info:'Text 1'},
-            {lat: -33.718234, lng: 150.363181, info:'Text 2'},
-            {lat: -33.727111, lng: 150.371124, info:'Text 3'},
-            {lat: -33.848588, lng: 151.209834, info:'Text 4'},
-            {lat: -33.851702, lng: 151.216968, info:'Text 5'},
-            {lat: -34.671264, lng: 150.863657, info:'Text 6'},
-            {lat: -35.304724, lng: 148.662905, info:'Text 7'},
-            {lat: -36.817685, lng: 175.699196, info:'Text 8'},
-            {lat: -36.828611, lng: 175.790222, info:'Text 9'},
-            {lat: -37.750000, lng: 145.116667, info:'Text 10'},
-            {lat: -37.759859, lng: 145.128708, info:'Text 11'},
-            {lat: -37.765015, lng: 145.133858, info:'Text 12'},
-            {lat: -37.770104, lng: 145.143299, info:'Text 13'},
-            {lat: -37.773700, lng: 145.145187, info:'Text 14'},
-            {lat: -37.774785, lng: 145.137978, info:'Text 15'},
-            {lat: -37.819616, lng: 144.968119, info:'Text 16'},
-            {lat: -38.330766, lng: 144.695692, info:'Text 17'},
-            {lat: -39.927193, lng: 175.053218, info:'Text 18'},
-            {lat: -41.330162, lng: 174.865694, info:'Text 19'},
-            {lat: -42.734358, lng: 147.439506, info:'Text 20'},
-            {lat: -42.734358, lng: 147.501315, info:'Text 21'},
-            {lat: -42.735258, lng: 147.438000, info:'Text 22'},
-            {lat: -43.999792, lng: 170.463352, info:'Text 23'},
-          ];  
-
+       function initMap() { 
+           
+        var locations = $data; 
         //var imageUrl = 'http://chart.apis.google.com/chart?cht=mm&chs=24x32&' + 'chco=FFFFFF,008CFF,000000&ext=.png'; 
         var imageUrl = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'; 
         
-        var map = new google.maps.Map(document.getElementById("{$mapId}"), {zoom: 3, center: {lat: -28.024, lng: 140.887}});
-        
-        // Create an array of alphabetical characters used to label the markers.
-        var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var map = new google.maps.Map(document.getElementById("{$mapId}"), {zoom: 3, center: {lat: 55.8508774, lng: -4.231964}}); 
         
         // Add some markers to the map.
         // Note: The code uses the JavaScript Array.prototype.map() method to
         // create an array of markers based on a given "locations" array.
         // The map() method here has nothing to do with the Google Maps API.
         
-        var markers = locations.map(function(location, i) {            
-          var LatLng = new google.maps.LatLng(location.lat, location.lng);    
-            return new google.maps.Marker({position: LatLng, label: labels[i % labels.length]
-          });
+        var markers = locations.map(function(location, i) {    
+            
+             var contentString = '<div class="content">'+
+                '<h2 class="nameHeading">' + location.name + '</h2>'+
+                '<h3 class="addressHeading">' + location.address +'</h1>'+
+                '<div class="bodyContent">'+'</div>'+
+            '</div>';
+             
+            var icon = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+            var infoWindow = new google.maps.InfoWindow({content: contentString});
+            var position = new google.maps.LatLng(location.latitude, location.longitude);    
+            var marker = new google.maps.Marker({position: position, map: map, title: location.name, icon:icon});
+            marker.addListener('click', function() {infoWindow.open(map, marker)});
+            return marker
+
         });
         
         // Add a marker clusterer to manage the markers.
