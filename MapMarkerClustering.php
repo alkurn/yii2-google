@@ -29,8 +29,9 @@ class MapMarkerClustering extends Widget
     public function run()
     {
         $height = isset($this->options['height']) ? $this->options['height'] : '500px';
-        $width = isset($this->options['height']) ? $this->options['width'] : '100%';
-        echo Html::beginTag('div', ['id' => (empty($this->options['id']) ? $this->getId() : $this->options['id']), 'class' => $this->options['class'], 'height' => $height, 'width' => $width, 'style'=>'height:'.$this->options['height'].';width:'.$this->options['width'].';']);
+        $width = isset($this->options['width']) ? $this->options['width'] : '100%';
+
+        echo Html::beginTag('div', ['id' => (empty($this->options['id']) ? $this->getId() : $this->options['id']), 'class' => $this->options['class'], 'height' => $height, 'width' => $width, 'style'=>'height:'.$height.';width:'.$width.';']);
         echo Html::endTag('div');
         $this->registerClientScript();
     }
