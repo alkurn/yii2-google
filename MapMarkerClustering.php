@@ -21,7 +21,7 @@ class MapMarkerClustering extends Widget
     public $longitude = '';
     public $title = '';
     public $options = [];
-    public $data = [];
+    public $items = [];
 
     /**
      * Renders the widget.
@@ -41,17 +41,18 @@ class MapMarkerClustering extends Widget
      */
     public function registerClientScript()
     {
+
         $latitude = $this->latitude;
         $longitude = $this->longitude;
         $title = $this->title;
-        $data = $this->data;
         $mapId = (empty($this->options['id']) ? $this->getId() : $this->options['id']);
         $view = $this->getView();
-
         $items = [];
-        foreach($data as $item){
-            $items[] = ['id' => $item->id, 'name' => $item->name, 'address' => $item->address, 'logo' => $item->logo, 'latitude' => $item->latitude, 'longitude' => $item->longitude];
+
+        foreach($this->items as $item){
+            $items[] = ['id' => $item['id'], 'name' => $item['name'], 'address' => $item['address'], 'logo' => $item['logo'], 'latitude' => $item['latitude'], 'longitude' => $item['longitude']];
         }
+
         $data = json_encode($items);
         if (Yii::$app->Map->apiKey) {
             $this->apiKey = Yii::$app->Map->apiKey;
@@ -60,7 +61,6 @@ class MapMarkerClustering extends Widget
         $view->registerJsFile(self::API_URL . http_build_query([
                 'key' => $this->apiKey,
                 'language' => $this->language,
-                //'callback' => $this->callback
             ]));
 
         $js = <<<JS
