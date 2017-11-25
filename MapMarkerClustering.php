@@ -31,7 +31,7 @@ class MapMarkerClustering extends Widget
         $height = isset($this->options['height']) ? $this->options['height'] : '500px';
         $width = isset($this->options['width']) ? $this->options['width'] : '100%';
 
-        echo Html::beginTag('div', ['id' => (empty($this->options['id']) ? $this->getId() : $this->options['id']), 'class' => $this->options['class'], 'height' => $height, 'width' => $width, 'style'=>'height:'.$height.';width:'.$width.';']);
+        echo Html::beginTag('div', ['id' => (empty($this->options['id']) ? $this->getId() : $this->options['id']), 'class' => $this->options['class'], 'height' => $height, 'width' => $width, 'style' => 'height:' . $height . ';width:' . $width . ';']);
         echo Html::endTag('div');
         $this->registerClientScript();
     }
@@ -49,8 +49,8 @@ class MapMarkerClustering extends Widget
         $view = $this->getView();
         $items = [];
 
-        foreach($this->items as $item){
-            $items[] = ['id' => $item['id'], 'name' => $item['name'], 'address' => $item['address'], 'logo' => $item['logo'], 'latitude' => $item['latitude'], 'longitude' => $item['longitude']];
+        foreach ($this->items as $item) {
+            $items[] = ['id' => $item['id'], 'name' => $item['name'], 'address' => $item['address'], 'logo' => $item['logo'], 'latitude' => $item['latitude'], 'longitude' => $item['longitude'], 'status' => $item['status']];
         }
 
         $data = json_encode($items);
@@ -64,10 +64,10 @@ class MapMarkerClustering extends Widget
             ]));
 
         $js = <<<JS
-         
+
        initMap();
-       function initMap() { 
-           
+
+       function initMap() {
         var locations = $data; 
         //var imageUrl = 'http://chart.apis.google.com/chart?cht=mm&chs=24x32&' + 'chco=FFFFFF,008CFF,000000&ext=.png'; 
         var imageUrl = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'; 
@@ -78,29 +78,41 @@ class MapMarkerClustering extends Widget
         // Note: The code uses the JavaScript Array.prototype.map() method to
         // create an array of markers based on a given "locations" array.
         // The map() method here has nothing to do with the Google Maps API.
-        
-        var markers = locations.map(function(location, i) {    
+        var markers = locations.map(function(location, i) {   
             
-             var contentString = '<div class="content">'+
+            var icon = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+            var statusTitle = '';
+            
+            switch (location.status){
+                case '1':
+                icon = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+                statusTitle = 'Response Status: InActive';
+                break;
+                case '2':
+                icon = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+                statusTitle = 'Response Status: Active';
+                break
+                default:
+            }
+            
+            var contentString = '<div class="content">'+
                 '<h2 class="nameHeading">' + location.name + '</h2>'+
-                '<h3 class="addressHeading">' + location.address +'</h1>'+
+                '<h3 class="addressHeading">' + location.address +'</h3>' +
+                '<h4 class="statusHeading">' + statusTitle +'</h3>'+
                 '<div class="bodyContent">'+'</div>'+
-            '</div>';
-             
-            var icon = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+            '</div>';         
+            
+            
             var infoWindow = new google.maps.InfoWindow({content: contentString});
             var position = new google.maps.LatLng(location.latitude, location.longitude);    
             var marker = new google.maps.Marker({position: position, map: map, title: location.name, icon:icon});
             marker.addListener('click', function() {infoWindow.open(map, marker)});
-            return marker
-
+            return marker;
         });
         
         // Add a marker clusterer to manage the markers.
         var markerCluster = new MarkerClusterer(map, markers, {imagePath: imageUrl});
-      }
-      
-                         
+      }                         
 JS;
         $view->registerJsFile('https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js');
         $view->registerJs($js, View::POS_READY);
