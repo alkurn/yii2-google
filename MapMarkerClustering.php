@@ -200,3 +200,4 @@ JS;
         $view->registerJs($js, View::POS_READY);
     }
 }
+
