@@ -97,7 +97,7 @@ class MapMarkerClustering extends Widget
                 statusTitle = 'Response Status: InActive';
                 break;
                 case '2':
-                icon = 'http://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=•|b6e61e;
+                icon = 'http://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=•|b6e61e';
                 statusTitle = 'Response Status: Active';
                 break;
                 default:
