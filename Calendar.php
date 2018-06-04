@@ -10,12 +10,12 @@ use yii\web\View;
 class Calendar extends InputWidget
 {
 
-    const API_URL = '//maps.googleapis.com/maps/api/js?';
+    //https://developers.google.com/calendar/create-events
     public $libraries = 'places';
     public $language = 'en-US';
     public $sensor = true;
     public $apiKey = 'AIzaSyC2oRAljHGZArBeQc5OXY0MI5BBoQproWY';
-    public $autocompleteOptions = [];
+    public $timeZone = 'America/Los_Angeles';
 
     function getClient()
     {
@@ -70,7 +70,7 @@ class Calendar extends InputWidget
         return str_replace('~', realpath($homeDirectory), $path);
     }
 
-    public function run()
+    public function summary()
     {
 
 // Get the API client and construct the service object.
@@ -99,5 +99,61 @@ class Calendar extends InputWidget
                 printf("%s (%s)\n", $event->getSummary(), $start);
             }
         }
+    }
+
+    public function create($summary, $location, $description, $start, $end, $emailArray = [])
+    {
+        $client = $this->getClient();
+        $service = new \Google_Service_Calendar($client);
+
+        /*$event = array(
+            'summary' => 'Google I/O 2015',
+            'location' => '800 Howard St., San Francisco, CA 94103',
+            'description' => 'A chance to hear more about Google\'s developer products.',
+            'start' => array(
+                'dateTime' => '2015-05-28T09:00:00-07:00',
+                'timeZone' => 'America/Los_Angeles',
+            ),
+            'end' => array(
+                'dateTime' => '2015-05-28T17:00:00-07:00',
+                'timeZone' => 'America/Los_Angeles',
+            ),
+            'recurrence' => array(
+                'RRULE:FREQ=DAILY;COUNT=2'
+            ),
+            'attendees' => array(
+                array('email' => 'lpage@example.com'),
+                array('email' => 'sbrin@example.com'),
+            ),
+            'reminders' => array(
+                'useDefault' => FALSE,
+                'overrides' => array(
+                    array('method' => 'email', 'minutes' => 24 * 60),
+                    array('method' => 'popup', 'minutes' => 10),
+                ),
+            ),
+        )*/
+
+        $event = [
+            'summary' => $summary,
+            'location' => $location,
+            'description' => $description,
+            'start' => ['dateTime' => $start, 'timeZone' => $this->timeZone,],
+            'end' => ['dateTime' => $end, 'timeZone' => $this->timeZone,],
+            'recurrence' => ['RRULE:FREQ=DAILY;COUNT=2'],
+            'attendees' => $emailArray,
+            'reminders' => [
+                'useDefault' => FALSE,
+                'overrides' => [
+                    ['method' => 'email', 'minutes' => 24 * 60],
+                    ['method' => 'popup', 'minutes' => 10],
+                ],
+            ],
+        ];
+
+        $event = new \Google_Service_Calendar_Event($event);
+        $calendarId = 'primary';
+        $event = $service->events->insert($calendarId, $event);
+        printf('Event created: %s\n', $event->htmlLink);
     }
 }
