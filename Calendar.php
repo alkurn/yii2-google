@@ -158,7 +158,7 @@ class Calendar
                 ),
             ),
         )*/
-
+        pr($service);
         $event = [
             'summary' => $summary,
             'location' => $location,
@@ -176,7 +176,7 @@ class Calendar
             ],
         ];
 
-        pr($event);
+
 
         $event = new \Google_Service_Calendar_Event($event);
         $calendarId = 'primary';
