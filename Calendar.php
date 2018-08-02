@@ -186,9 +186,8 @@ class Calendar
 
         $calendarId = 'primary';
         $event = $service->events->insert($calendarId, $event);
-        pr($event);
         printf('Event created: %s\n', $event->htmlLink);
-        exit;
+
     }
 
 
