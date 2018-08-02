@@ -169,8 +169,8 @@ class Calendar
             'summary' => $summary,
             'location' => $location,
             'description' => $description,
-            'start' => ['dateTime' => $start, 'timeZone' => $this->timeZone,],
-            'end' => ['dateTime' => $end, 'timeZone' => $this->timeZone,],
+            'start' => $start,
+            'end' => $end,
             'recurrence' => ['RRULE:FREQ=DAILY;COUNT=2'],
             'attendees' => $emailArray,
             'reminders' => [
