@@ -301,7 +301,7 @@ class Geocoder {
      *
      * @var string
      */
-    private $apiKey = 'AIzaSyAZXDxkEgRSJz_pBlBEmX5LJ8lHrdlfA1g';
+    public $apiKey = 'AIzaSyAZXDxkEgRSJz_pBlBEmX5LJ8lHrdlfA1g';
     /**
      * Client ID for Business clients.
      *

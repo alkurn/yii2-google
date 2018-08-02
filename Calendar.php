@@ -7,33 +7,50 @@ use yii\widgets\InputWidget;
 use yii\helpers\Html;
 use yii\web\View;
 
-class Calendar extends InputWidget
+define('STDIN', fopen("php://stdin", "r"));
+
+class Calendar
 {
 
     //https://developers.google.com/calendar/create-events
+
     public $libraries = 'places';
     public $language = 'en-US';
     public $sensor = true;
-    public $apiKey = 'AIzaSyC2oRAljHGZArBeQc5OXY0MI5BBoQproWY';
+    public $apiKey = '';
     public $timeZone = 'America/Los_Angeles';
+    public $authConfig = '';
+    private $redirectUri = '';
 
     function getClient()
     {
+
         $client = new \Google_Client();
         $client->setApplicationName('Google Calendar API PHP Quickstart');
-        $client->setScopes(\Google_Service_Calendar::CALENDAR_READONLY);
-        $client->setAuthConfig('client_secret.json');
+        $client->setDeveloperKey($this->apiKey);
+        $client->setScopes(\Google_Service_Calendar::CALENDAR);
+        $client->setAuthConfig($this->authConfig);
         $client->setAccessType('offline');
 
+        if (!empty($this->redirectUri)) {
+            $client->setRedirectUri($this->redirectUri);
+        }
+
         // Load previously authorized credentials from a file.
-        $credentialsPath = $this->expandHomeDirectory('credentials.json');
-        if (file_exists($credentialsPath)) {
-            $accessToken = json_decode(file_get_contents($credentialsPath), true);
+        // $credentialsPath = $this->expandHomeDirectory('credentials.json');
+        // https://accounts.google.com/o/oauth2/auth?response_type=code&access_type=offline&client_id=554995591695-lc73an2n2qm4qube3m421r0sop3t4dt7.apps.googleusercontent.com&redirect_uri=http://train2you.alk/sync-oauth&state&scope=https://www.googleapis.com/auth/calendar&approval_prompt=auto
+
+        if (\Yii::$app->session->has('accessToken') && $token = \Yii::$app->session->accessToken) {
+            $accessToken = $client->fetchAccessTokenWithAuthCode($token);
         } else {
             // Request authorization from the user.
             $authUrl = $client->createAuthUrl();
+            \Yii::$app->response->redirect($authUrl)->send();
+            exit;
+
             printf("Open the following link in your browser:\n%s\n", $authUrl);
-            print 'Enter verification code: ';
+            print 'Enter verification code:';
+
             $authCode = trim(fgets(STDIN));
 
             // Exchange authorization code for an access token.
@@ -43,9 +60,11 @@ class Calendar extends InputWidget
             if (!file_exists(dirname($credentialsPath))) {
                 mkdir(dirname($credentialsPath), 0700, true);
             }
+
             file_put_contents($credentialsPath, json_encode($accessToken));
             printf("Credentials saved to %s\n", $credentialsPath);
         }
+
         $client->setAccessToken($accessToken);
 
         // Refresh the token if it's expired.
@@ -54,6 +73,11 @@ class Calendar extends InputWidget
             file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
         }
         return $client;
+    }
+
+    public function setRedirectUri($url)
+    {
+        $this->redirectUri = $url;
     }
 
     /**
@@ -72,12 +96,11 @@ class Calendar extends InputWidget
 
     public function summary()
     {
-
-// Get the API client and construct the service object.
+        // Get the API client and construct the service object.
         $client = $this->getClient();
         $service = new \Google_Service_Calendar($client);
 
-// Print the next 10 events on the user's calendar.
+        // Print the next 10 events on the user's calendar.
         $calendarId = 'primary';
         $optParams = array(
             'maxResults' => 10,
@@ -85,9 +108,11 @@ class Calendar extends InputWidget
             'singleEvents' => true,
             'timeMin' => date('c'),
         );
-        $results = $service->events->listEvents($calendarId, $optParams);
 
-        if (empty($results->getItems())) {
+        $results = $service->events->listEvents($calendarId, $optParams);
+        $items = $results->getItems();
+
+        if (empty($items)) {
             print "No upcoming events found.\n";
         } else {
             print "Upcoming events:\n";
@@ -155,5 +180,13 @@ class Calendar extends InputWidget
         $calendarId = 'primary';
         $event = $service->events->insert($calendarId, $event);
         printf('Event created: %s\n', $event->htmlLink);
+    }
+
+    public function oauth($code = null)
+    {
+
+        $authCode = trim(fgets(STDIN));
+        // Exchange authorization code for an access token.
+        // $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
     }
 }
