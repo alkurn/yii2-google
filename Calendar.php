@@ -42,7 +42,7 @@ class Calendar
 
         if (\Yii::$app->session->has('accessToken') && $token = \Yii::$app->session->get('accessToken')) {
             $accessToken = $client->fetchAccessTokenWithAuthCode($token);
-            pr($accessToken);
+
         } else {
             // Request authorization from the user.
             $authUrl = $client->createAuthUrl();
