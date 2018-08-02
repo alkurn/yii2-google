@@ -40,14 +40,13 @@ class Calendar
         // $credentialsPath = $this->expandHomeDirectory('credentials.json');
         // https://accounts.google.com/o/oauth2/auth?response_type=code&access_type=offline&client_id=554995591695-lc73an2n2qm4qube3m421r0sop3t4dt7.apps.googleusercontent.com&redirect_uri=http://train2you.alk/sync-oauth&state&scope=https://www.googleapis.com/auth/calendar&approval_prompt=auto
 
-        if (\Yii::$app->session->has('accessToken') && $token = \Yii::$app->session->accessToken) {
+        if (\Yii::$app->session->has('accessToken') && $token = \Yii::$app->session->get('accessToken')) {
             $accessToken = $client->fetchAccessTokenWithAuthCode($token);
         } else {
             // Request authorization from the user.
             $authUrl = $client->createAuthUrl();
             \Yii::$app->response->redirect($authUrl)->send();
             exit;
-
             printf("Open the following link in your browser:\n%s\n", $authUrl);
             print 'Enter verification code:';
 
@@ -182,11 +181,9 @@ class Calendar
         printf('Event created: %s\n', $event->htmlLink);
     }
 
-    public function oauth($code = null)
+    public function oauth($authCode = null)
     {
 
-        $authCode = trim(fgets(STDIN));
-        // Exchange authorization code for an access token.
-        // $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
+        $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
     }
 }
