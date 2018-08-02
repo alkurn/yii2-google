@@ -24,7 +24,6 @@ class Calendar
 
     function getClient()
     {
-
         $client = new \Google_Client();
         $client->setApplicationName('Google Calendar API PHP Quickstart');
         $client->setDeveloperKey($this->apiKey);
@@ -37,14 +36,9 @@ class Calendar
         }
 
         // Load previously authorized credentials from a file.
-        // $credentialsPath = $this->expandHomeDirectory('credentials.json');
-        // https://accounts.google.com/o/oauth2/auth?response_type=code&access_type=offline&client_id=554995591695-lc73an2n2qm4qube3m421r0sop3t4dt7.apps.googleusercontent.com&redirect_uri=http://train2you.alk/sync-oauth&state&scope=https://www.googleapis.com/auth/calendar&approval_prompt=auto
 
         if (\Yii::$app->session->has('accessToken')) {
-           $token = \Yii::$app->session->get('accessToken');
-           $accessToken = $client->fetchAccessTokenWithAuthCode($token);
-            pr($accessToken);
-
+            $accessToken = \Yii::$app->session->get('accessToken');
         } else {
             // Request authorization from the user.
             $authUrl = $client->createAuthUrl();
@@ -70,11 +64,28 @@ class Calendar
         $client->setAccessToken($accessToken);
 
         // Refresh the token if it's expired.
-        if ($client->isAccessTokenExpired()) {
+        /*if ($client->isAccessTokenExpired()) {
             $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
             file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
-        }
+        }*/
         return $client;
+    }
+
+    public function oAuth($token){
+
+        $client = new \Google_Client();
+        $client->setApplicationName('Google Calendar API PHP Quickstart');
+        $client->setDeveloperKey($this->apiKey);
+        $client->setScopes(\Google_Service_Calendar::CALENDAR);
+        $client->setAuthConfig($this->authConfig);
+        $client->setAccessType('offline');
+
+        if (!empty($this->redirectUri)) {
+            $client->setRedirectUri($this->redirectUri);
+        }
+
+        $accessToken = $client->fetchAccessTokenWithAuthCode($token);
+        \Yii::$app->session['accessToken'] = $accessToken;
     }
 
     public function setRedirectUri($url)
@@ -185,5 +196,7 @@ class Calendar
         $event = $service->events->insert($calendarId, $event);
         printf('Event created: %s\n', $event->htmlLink);
     }
+
+
 
 }
