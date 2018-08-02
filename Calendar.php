@@ -183,9 +183,10 @@ class Calendar
         ];
 
         $event = new \Google_Service_Calendar_Event($event);
-        pr($event);
+
         $calendarId = 'primary';
         $event = $service->events->insert($calendarId, $event);
+        pr($event);
         printf('Event created: %s\n', $event->htmlLink);
         exit;
     }
