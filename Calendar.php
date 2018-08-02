@@ -52,13 +52,6 @@ class Calendar
             // Exchange authorization code for an access token.
             $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
 
-            // Store the credentials to disk.
-            if (!file_exists(dirname($credentialsPath))) {
-                mkdir(dirname($credentialsPath), 0700, true);
-            }
-
-            file_put_contents($credentialsPath, json_encode($accessToken));
-            printf("Credentials saved to %s\n", $credentialsPath);
         }
 
         $client->setAccessToken($accessToken);
@@ -171,7 +164,7 @@ class Calendar
                 ),
             ),
         )*/
-        pr($service);
+        //pr($service);
         $event = [
             'summary' => $summary,
             'location' => $location,
@@ -190,7 +183,7 @@ class Calendar
         ];
 
 
-
+pr($event);
         $event = new \Google_Service_Calendar_Event($event);
         $calendarId = 'primary';
         $event = $service->events->insert($calendarId, $event);
