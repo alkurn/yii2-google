@@ -44,23 +44,9 @@ class Calendar
             $authUrl = $client->createAuthUrl();
             \Yii::$app->response->redirect($authUrl)->send();
             exit;
-            printf("Open the following link in your browser:\n%s\n", $authUrl);
-            print 'Enter verification code:';
-
-            $authCode = trim(fgets(STDIN));
-
-            // Exchange authorization code for an access token.
-            $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
-
         }
 
         $client->setAccessToken($accessToken);
-
-        // Refresh the token if it's expired.
-        /*if ($client->isAccessTokenExpired()) {
-            $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-            file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
-        }*/
         return $client;
     }
 
