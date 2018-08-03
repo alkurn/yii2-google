@@ -36,7 +36,6 @@ class Calendar
         }
 
         // Load previously authorized credentials from a file.
-
         if (\Yii::$app->session->has('accessToken')) {
             $accessToken = \Yii::$app->session->get('accessToken');
         } else {
@@ -50,7 +49,8 @@ class Calendar
         return $client;
     }
 
-    public function oAuth($token){
+    public function oAuth($token)
+    {
 
         $client = new \Google_Client();
         $client->setApplicationName('Google Calendar API PHP Quickstart');
@@ -72,19 +72,6 @@ class Calendar
         $this->redirectUri = $url;
     }
 
-    /**
-     * Expands the home directory alias '~' to the full path.
-     * @param string $path the path to expand.
-     * @return string the expanded path.
-     */
-    function expandHomeDirectory($path)
-    {
-        $homeDirectory = getenv('HOME');
-        if (empty($homeDirectory)) {
-            $homeDirectory = getenv('HOMEDRIVE') . getenv('HOMEPATH');
-        }
-        return str_replace('~', realpath($homeDirectory), $path);
-    }
 
     public function summary()
     {
@@ -94,12 +81,12 @@ class Calendar
 
         // Print the next 10 events on the user's calendar.
         $calendarId = 'primary';
-        $optParams = array(
+        $optParams = [
             'maxResults' => 10,
             'orderBy' => 'startTime',
             'singleEvents' => true,
             'timeMin' => date('c'),
-        );
+        ];
 
         $results = $service->events->listEvents($calendarId, $optParams);
         $items = $results->getItems();
@@ -151,6 +138,7 @@ class Calendar
             ),
         )*/
         //pr($service);
+
         $event = [
             'summary' => $summary,
             'location' => $location,
@@ -169,13 +157,10 @@ class Calendar
         ];
 
         $event = new \Google_Service_Calendar_Event($event);
-
         $calendarId = 'primary';
         $event = $service->events->insert($calendarId, $event);
-        printf('Event created: %s\n', $event->htmlLink);
 
+        //printf('Event created: %s\n', $event->htmlLink);
+        return $event;
     }
-
-
-
 }
