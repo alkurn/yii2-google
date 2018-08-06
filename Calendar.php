@@ -91,18 +91,22 @@ class Calendar
         $results = $service->events->listEvents($calendarId, $optParams);
         $items = $results->getItems();
 
-        if (empty($items)) {
-            print "No upcoming events found.\n";
-        } else {
-            print "Upcoming events:\n";
-            foreach ($results->getItems() as $event) {
-                $start = $event->start->dateTime;
-                if (empty($start)) {
-                    $start = $event->start->date;
+       /*
+           if (empty($items)) {
+                print "No upcoming events found.\n";
+            } else {
+                print "Upcoming events:\n";
+                foreach ($results->getItems() as $event) {
+                    $start = $event->start->dateTime;
+                    if (empty($start)) {
+                        $start = $event->start->date;
+                    }
+                    printf("%s (%s)\n", $event->getSummary(), $start);
                 }
-                printf("%s (%s)\n", $event->getSummary(), $start);
-            }
         }
+       */
+
+        return empty($items) ? false : $items;
     }
 
     public function create($event)
@@ -110,8 +114,7 @@ class Calendar
         $client = $this->getClient();
         $service = new \Google_Service_Calendar($client);
         $event = new \Google_Service_Calendar_Event($event);
-        $calendarId = 'primary';
-        $event = $service->events->insert($calendarId, $event);
+        $event = $service->events->insert('primary', $event);
         return $event;
     }
 }
