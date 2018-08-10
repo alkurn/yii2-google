@@ -59,10 +59,9 @@ class Calendar
         $client->setAuthConfig($this->authConfig);
         $client->setAccessType('offline');
 
-        if (!empty($this->redirectUri)) {
+        if ( !empty($this->redirectUri) ) {
             $client->setRedirectUri($this->redirectUri);
         }
-
         $accessToken = $client->fetchAccessTokenWithAuthCode($token);
         \Yii::$app->session['accessToken'] = $accessToken;
     }
