@@ -16,7 +16,7 @@ class MapMarkerClustering extends Widget
     public $callback = 'initMap';
     public $sensor = true;
     public $apiKey = 'AIzaSyDQ0l9MIiNQIdB__VDKCzEqkEz2Wcoqq0A';
-
+    public $libraries = null;
     public $latitude = '';
     public $longitude = '';
     public $title = '';
@@ -30,6 +30,7 @@ class MapMarkerClustering extends Widget
     {
         $height = isset($this->options['height']) ? $this->options['height'] : '500px';
         $width = isset($this->options['width']) ? $this->options['width'] : '100%';
+        $this->libraries = isset($this->options['libraries']) ? $this->options['libraries'] : null;
 
         echo Html::beginTag('div', ['id' => (empty($this->options['id']) ? $this->getId() : $this->options['id']), 'class' => $this->options['class'], 'height' => $height, 'width' => $width, 'style' => 'height:' . $height . ';width:' . $width . ';']);
         echo Html::endTag('div');
@@ -58,10 +59,13 @@ class MapMarkerClustering extends Widget
             $this->apiKey = Yii::$app->Map->apiKey;
         }
 
-        $view->registerJsFile(self::API_URL . http_build_query([
-                'key' => $this->apiKey,
-                'language' => $this->language,
-            ]));
+        $queries = ['key' => $this->apiKey, 'language' => $this->language,];
+        $libraries = (is_array($this->libraries)) ? implode(',', $this->libraries) : (is_string($this->libraries) ? $this->libraries : null);
+        if (!is_null($libraries)) {
+            $queries = array_merge(['libraries' => $libraries], $queries);
+        }
+
+        $view->registerJsFile(self::API_URL . http_build_query($queries));
 
         $js = <<<JS
 

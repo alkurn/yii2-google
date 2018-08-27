@@ -89,7 +89,7 @@ class Calendar
         ];
 
         $results = $service->events->listEvents($calendarId, $optParams);
-        $items = $results->getItems();
+        $items = $results->getItems(); 
         return empty($items) ? false : $items;
     }
 
@@ -99,6 +99,8 @@ class Calendar
         $service = new \Google_Service_Calendar($client);
         $event = new \Google_Service_Calendar_Event($event);
         $event = $service->events->insert('primary', $event);
+
         return $event ? true : false;
+ 
     }
 }
