@@ -89,18 +89,23 @@ class Calendar
         ];
 
         $results = $service->events->listEvents($calendarId, $optParams);
-        $items = $results->getItems(); 
+        $items = $results->getItems();
         return empty($items) ? false : $items;
     }
 
-    public function create($event)
+    public function create($events = null)
     {
         $client = $this->getClient();
         $service = new \Google_Service_Calendar($client);
-        $event = new \Google_Service_Calendar_Event($event);
-        $event = $service->events->insert('primary', $event);
-
-        return $event ? true : false;
- 
+        
+        $eStatus = [];
+        if(is_array($events) && count($events) > 0){
+            foreach ($events as $id => $event){
+                $event = new \Google_Service_Calendar_Event($event);
+                $eStatus[$id] = $service->events->insert('primary', $event) ? 1 : null;
+            }
+            return $eStatus;
+        }
+        return false;
     }
 }
