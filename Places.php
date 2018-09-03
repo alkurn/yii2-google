@@ -44,14 +44,12 @@ class Places extends InputWidget
             $this->apiKey = \Yii::$app->Places->apiKey;
         }
 
-
         $jsFile = self::API_URL . http_build_query(['libraries' => $this->libraries,'key' => $this->apiKey, 'language' => $this->language]);
         $view->registerJsFile($jsFile, ['depends' => JqueryAsset::class]);
         if (in_array(self::API_URL, $view->jsFiles)) {
             unset($view->jsFiles[$jsFile]);
         }
 
-        /*$view->registerJsFile(self::API_URL . http_build_query(['libraries' => $this->libraries,'key' => $this->apiKey,'language' => $this->language]));*/
 
         $js = <<<JS
                     (function(){
