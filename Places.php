@@ -3,6 +3,7 @@
 
 namespace alkurn\google;
 
+use yii\web\JqueryAsset;
 use yii\widgets\InputWidget;
 use yii\helpers\Html;
 use yii\web\View;
@@ -43,11 +44,14 @@ class Places extends InputWidget
             $this->apiKey = \Yii::$app->Places->apiKey;
         }
 
-        $view->registerJsFile(self::API_URL . http_build_query([
-                'libraries' => $this->libraries,
-                'key' => $this->apiKey,
-                'language' => $this->language
-            ]));
+
+        $jsFile = self::API_URL . http_build_query(['libraries' => $this->libraries,'key' => $this->apiKey, 'language' => $this->language]);
+        $view->registerJsFile($jsFile, ['depends' => JqueryAsset::class]);
+        if (in_array(self::API_URL, $view->jsFiles)) {
+            unset($view->jsFiles[$jsFile]);
+        }
+
+        /*$view->registerJsFile(self::API_URL . http_build_query(['libraries' => $this->libraries,'key' => $this->apiKey,'language' => $this->language]));*/
 
         $js = <<<JS
                     (function(){

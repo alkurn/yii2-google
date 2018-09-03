@@ -97,8 +97,8 @@ class Calendar
     {
         $client = $this->getClient();
         $service = new \Google_Service_Calendar($client);
-        
         $eStatus = [];
+
         if(is_array($events) && count($events) > 0){
             foreach ($events as $id => $event){
                 $event = new \Google_Service_Calendar_Event($event);

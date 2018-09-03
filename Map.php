@@ -5,6 +5,7 @@ namespace alkurn\google;
 
 use yii\base\Widget;
 use yii\helpers\Html;
+use yii\web\JqueryAsset;
 use yii\web\View;
 use yii\helpers\ArrayHelper;
 
@@ -15,7 +16,8 @@ class Map extends Widget
     const API_URL = '//maps.googleapis.com/maps/api/js?';
     public $language = 'en-US';
     public $sensor = true;
-    public $apiKey = 'AIzaSyDQ0l9MIiNQIdB__VDKCzEqkEz2Wcoqq0A';
+   // public $apiKey = 'AIzaSyDQ0l9MIiNQIdB__VDKCzEqkEz2Wcoqq0A';
+    public $apiKey = 'AIzaSyC2oRAljHGZArBeQc5OXY0MI5BBoQproWY';
 
     public $latitude = '';
     public $longitude = '';
@@ -46,11 +48,13 @@ class Map extends Widget
         if (\Yii::$app->Map->apiKey) {
             $this->apiKey = \Yii::$app->Map->apiKey;
         }
-        $view->registerJsFile(self::API_URL . http_build_query([
-                'key' => $this->apiKey,
-                'language' => $this->language
-            ]));
 
+
+        $jsFile = self::API_URL . http_build_query(['key' => $this->apiKey,'language' => $this->language]);
+        $view->registerJsFile($jsFile, ['depends' => JqueryAsset::class]);
+        if (in_array(self::API_URL, $view->jsFiles)) {
+            unset($view->jsFiles[$jsFile]);
+        }
 
         $js = <<<JS
                                                  

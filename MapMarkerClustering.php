@@ -5,6 +5,7 @@ namespace alkurn\google;
 
 use yii\base\Widget;
 use yii\helpers\Html;
+use yii\web\JqueryAsset;
 use yii\web\View;
 use yii\helpers\ArrayHelper;
 use Yii;
@@ -15,7 +16,8 @@ class MapMarkerClustering extends Widget
     public $language = 'en-US';
     public $callback = 'initMap';
     public $sensor = true;
-    public $apiKey = 'AIzaSyDQ0l9MIiNQIdB__VDKCzEqkEz2Wcoqq0A';
+    //public $apiKey = 'AIzaSyDQ0l9MIiNQIdB__VDKCzEqkEz2Wcoqq0A';
+    public $apiKey = 'AIzaSyC2oRAljHGZArBeQc5OXY0MI5BBoQproWY';
     public $libraries = null;
     public $latitude = '';
     public $longitude = '';
@@ -61,11 +63,18 @@ class MapMarkerClustering extends Widget
 
         $queries = ['key' => $this->apiKey, 'language' => $this->language,];
         $libraries = (is_array($this->libraries)) ? implode(',', $this->libraries) : (is_string($this->libraries) ? $this->libraries : null);
+
+
         if (!is_null($libraries)) {
             $queries = array_merge(['libraries' => $libraries], $queries);
         }
 
-        $view->registerJsFile(self::API_URL . http_build_query($queries));
+        $jsFile = self::API_URL . http_build_query($queries);
+        $view->registerJsFile($jsFile, ['depends' => JqueryAsset::class]);
+        if (in_array(self::API_URL, $view->jsFiles)) {
+            unset($view->jsFiles[$jsFile]);
+        }
+
 
         $js = <<<JS
 
@@ -126,7 +135,7 @@ class MapMarkerClustering extends Widget
         var markerCluster = new MarkerClusterer(map, markers, {imagePath: imageUrl});
       }                         
 JS;
-        $view->registerJsFile('https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js');
+        $view->registerJsFile('https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js',  ['depends' => JqueryAsset::class]);
         $view->registerJs($js, View::POS_READY);
     }
 }
