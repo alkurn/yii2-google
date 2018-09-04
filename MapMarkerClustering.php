@@ -28,14 +28,17 @@ class MapMarkerClustering extends Widget
     /**
      * Renders the widget.
      */
+
     public function run()
     {
+        Google::widget();
         $height = isset($this->options['height']) ? $this->options['height'] : '500px';
         $width = isset($this->options['width']) ? $this->options['width'] : '100%';
         $this->libraries = isset($this->options['libraries']) ? $this->options['libraries'] : null;
 
         echo Html::beginTag('div', ['id' => (empty($this->options['id']) ? $this->getId() : $this->options['id']), 'class' => $this->options['class'], 'height' => $height, 'width' => $width, 'style' => 'height:' . $height . ';width:' . $width . ';']);
         echo Html::endTag('div');
+
         $this->registerClientScript();
     }
 
@@ -57,23 +60,6 @@ class MapMarkerClustering extends Widget
         }
 
         $data = json_encode($items);
-        if (Yii::$app->Map->apiKey) {
-            $this->apiKey = Yii::$app->Map->apiKey;
-        }
-
-        $queries = ['key' => $this->apiKey, 'language' => $this->language,];
-        $libraries = (is_array($this->libraries)) ? implode(',', $this->libraries) : (is_string($this->libraries) ? $this->libraries : null);
-
-
-        if (!is_null($libraries)) {
-            $queries = array_merge(['libraries' => $libraries], $queries);
-        }
-
-        $jsFile = self::API_URL . http_build_query($queries);
-        $view->registerJsFile($jsFile, ['depends' => JqueryAsset::class]);
-        if (in_array(self::API_URL, $view->jsFiles)) {
-            unset($view->jsFiles[$jsFile]);
-        }
 
 
         $js = <<<JS

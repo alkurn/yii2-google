@@ -11,12 +11,9 @@ use yii\helpers\ArrayHelper;
 
 class Map extends Widget
 {
-
-
     const API_URL = '//maps.googleapis.com/maps/api/js?';
     public $language = 'en-US';
     public $sensor = true;
-   // public $apiKey = 'AIzaSyDQ0l9MIiNQIdB__VDKCzEqkEz2Wcoqq0A';
     public $apiKey = 'AIzaSyC2oRAljHGZArBeQc5OXY0MI5BBoQproWY';
 
     public $latitude = '';
@@ -29,6 +26,7 @@ class Map extends Widget
      */
     public function run()
     {
+        Google::widget();
         $this->registerClientScript();
         echo Html::beginTag('div', ['id' => $this->getId(), 'class' => $this->options['class']]);
         echo Html::endTag('div');
@@ -44,17 +42,6 @@ class Map extends Widget
         $title = $this->title;
         $mapId = $this->getId();
         $view = $this->getView();
-
-        if (\Yii::$app->Map->apiKey) {
-            $this->apiKey = \Yii::$app->Map->apiKey;
-        }
-
-
-        $jsFile = self::API_URL . http_build_query(['key' => $this->apiKey,'language' => $this->language]);
-        $view->registerJsFile($jsFile, ['depends' => JqueryAsset::class]);
-        if (in_array(self::API_URL, $view->jsFiles)) {
-            unset($view->jsFiles[$jsFile]);
-        }
 
         $js = <<<JS
                                                  
