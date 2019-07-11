@@ -14,7 +14,7 @@ class People
 {
     public $clientId = '327158899199-ksrn2s1msl3gptvum6dlcf7dm3le34fn.apps.googleusercontent.com';
     public $clientSecret = 'elqOLRcZnGfzWbrDqtB5XmmU';
-    private $redirectUri = 'https://socialcross.org/import';
+    public $redirectUri = 'https://socialcross.org/import';
 
     function getClient()
     {
