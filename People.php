@@ -10,7 +10,7 @@ use yii\web\View;
 
 define('STDIN', fopen("php://stdin", "r"));
 
-class Peoples
+class People
 {
     public $clientId = '327158899199-ksrn2s1msl3gptvum6dlcf7dm3le34fn.apps.googleusercontent.com';
     public $clientSecret = 'elqOLRcZnGfzWbrDqtB5XmmU';
