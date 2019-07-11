@@ -30,11 +30,12 @@ class People
         if (isset($oauth) && !empty($oauth)) {
             // Start auth flow by redirecting to Google's auth server
             $auth_url = $client->createAuthUrl();
-            $this->redirect($auth_url);
+            Yii::$app->response->redirect($auth_url)->send();
         } else if (isset($code) && !empty($code)) {
             $client->authenticate($code);
             Yii::$app->session['accessToken'] = $client->getAccessToken();
-            $this->redirect($this->redirectUri);
+
+            Yii::$app->response->redirect($this->redirectUri)->send();
         } else if (Yii::$app->session->has('accessToken')) {
             // You have an access token; use it to call the People API
             $client->setAccessToken(Yii::$app->session['accessToken']);
@@ -42,7 +43,8 @@ class People
             return $client;
             // TODO: Use service object to request People data
         } else {
-            $this->redirect($this->redirectUri . '?oauth=1');
+
+            Yii::$app->response->redirect($this->redirectUri . '?oauth=1')->send();
         }
         return $client;
     }
