@@ -47,11 +47,15 @@ class People
         return $client;
     }
 
-    public function importContacts($accessToken)
+    public function importContacts($accessToken, $page=1)
     {
         $access_token = $accessToken['access_token'];
         $max_results = 200;
-        $url = 'https://www.google.com/m8/feeds/contacts/default/full?max-results=' . $max_results . '&alt=json&v=3.0&oauth_token=' . $access_token;
+
+        /*$url = 'https://www.google.com/m8/feeds/contacts/default/full?max-results=' . $max_results . '&alt=json&v=3.0&oauth_token=' . $access_token. '&start-index='.$page;*/
+
+        $url = 'https://www.google.com/m8/feeds/contacts/default/full?alt=json&v=3.0&oauth_token=' . $access_token;
+
         $json_response = $this->retrieveContacts($url);
         $contacts = json_decode($json_response, true);
         $return = [];
