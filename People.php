@@ -30,8 +30,7 @@ class People
         if (isset($oauth) && !empty($oauth)) {
             // Start auth flow by redirecting to Google's auth server
             $auth_url = $client->createAuthUrl();
-            print_r($auth_url);
-            exit;
+
             Yii::$app->response->redirect($auth_url)->send();
         } else if (isset($code) && !empty($code)) {
             $client->authenticate($code);
