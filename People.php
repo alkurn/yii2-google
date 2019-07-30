@@ -58,8 +58,7 @@ class People
         /*$url = 'https://www.google.com/m8/feeds/contacts/default/full?max-results=' . $max_results . '&alt=json&v=3.0&oauth_token=' . $access_token. '&start-index='.$page;*/
 
         $url = 'https://www.google.com/m8/feeds/contacts/default/full?alt=json&v=3.0&oauth_token=' . $access_token;
-        echo $url;
-        exit;
+
         $json_response = $this->retrieveContacts($url);
         $contacts = json_decode($json_response, true);
         $return = [];
