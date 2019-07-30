@@ -67,11 +67,14 @@ class People
                 //retrieve user photo
                 //$image = $this->retrieveUserPhoto($contact, $access_token);
                 //retrieve Name + email and store into array
-                $return[] = array(
-                    'name' => $contact['title']['$t'],
-                    'email' => $contact['gd$email'][0]['address'],
-                  //  'image' => $image
-                );
+                $emailAddress =  $contact['gd$email'][0]['address'];
+                if(!empty($emailAddress)){
+                    $return[] = array(
+                        'name' => $contact['title']['$t'],
+                        'email' => $contact['gd$email'][0]['address'],
+                        //  'image' => $image
+                    );
+                }
             }
         }
         return $return;
